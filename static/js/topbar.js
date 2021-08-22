@@ -9,7 +9,7 @@ class topBar extends HTMLElement {
   
     render() {
       this.innerHTML = `
-        <nav class="w-full h-1/4 py-12 bg-blue-800 shadow flex-none">
+        <nav class="w-full py-4 bg-blue-800 shadow flex-none">
             <div class="w-full container mx-auto flex flex-wrap items-center justify-between">
 
                 <nav>
