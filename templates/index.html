@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="description" content="OIP FE">
+  <meta name="keywords" content="HTML, CSS, JavaScript">
+  <meta name="author" content="Group 17">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+
+<body>
+  <div class="data_display">
+    <h3 id="hum">Humidity: </h3>
+    <h3 id="temp">Temperature: </h3>
+  </div>
+
+  <div class="center_frame">
+    <h1 id="status">STATUS...</h1>
+    <h2 id="time_left">10mins 20s</h2>
+    <button id="button" onclick="start()" style="background-color: lightgreen; width: 500px; height: 65px; font-size: 50px;">START</button>
+
+  </div>
+
+</body>
+<script>
+
+  async function updateHum() {
+    document.getElementById("hum").innerHTML = "Humidity: 0";
+    await fetch('http://127.0.0.1:5000/updateHum').then(response => response.json()).then(function (json) {
+      console.log(json);
+      document.getElementById("hum").innerHTML = "Humidity: " + json;
+    })
+
+
+  }
+
+  async function updateTemp() {
+    document.getElementById("hum").innerHTML = "Humidity: 0";
+    await fetch('http://127.0.0.1:5000/updateTemp').then(response => response.json()).then(function(json) {
+      console.log(json)
+      document.getElementById("temp").innerHTML = "Temperature: " + json;
+    })
+  }
+
+  async function updateTimer() {
+    var time = await fetch('http://127.0.0.1:5000/updateTimer').then(response => response.json()).then(function(json) {
+      //window.alert(json +" "+ Date().getTime())
+      console.log(json)
+      return json;
+    })
+    return time;
+  }
+
+  async function countdown() {
+    var json = await updateTimer();
+    var interval = setInterval(function() {
+      difference = json * 1000
+
+      var hours = Math.floor((difference % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+      var minutes = Math.floor((difference % (1000 * 60 * 60)) / (1000 * 60));
+      var seconds = Math.floor((difference % (1000 * 60)) / 1000);
+
+      document.getElementById("time_left").innerHTML = hours + "H " + minutes + "mins " + seconds + "sec ";
+
+      json = json - 1;
+
+      if (difference < 0) {
+        clearInterval(interval);
+        document.getElementById("time_left").innerHTML = "COMPLETED";
+      }
+
+    }, 1000);
+  }
+
+  function sleep(ms) {
+  return new Promise(resolve => setTimeout(resolve, ms));
+}
+
+  function intervalUpdateHumTemp() {
+    setInterval(function() {
+      updateHum();
+      updateTemp();
+    }, 1000);
+
+  }
+
+  function start(){
+    button = document.getElementById("button");
+    var newButton = document.createElement("div");
+    newButton.innerHTML = `<button id="button" onclick="stop()" style="background-color: red;  width: 500px; height: 65px; font-size: 50px;">STOP</button>`
+    button.parentNode.replaceChild(newButton, button);
+  }
+
+  function stop() {
+    button = document.getElementById("button");
+    var newButton = document.createElement("div");
+    newButton.innerHTML = `<button id="button" onclick="start()" style="background-color: lightgreen;  width: 500px; height: 65px; font-size: 50px;">START</button>`
+    button.parentNode.replaceChild(newButton, button);
+    
+  }
+
+  intervalUpdateHumTemp();
+  countdown();
+
+  
+
+</script>
+
+</html>
+
+<style>
+  .data_display {
+    text-align: end;
+  }
+
+  #hum {
+    font-size: 50px;
+  }
+
+  #temp {
+    font-size: 50px;
+  }
+
+  .center_frame {
+    text-align: center;
+    margin: 50px;
+    background-color: green;
+  }
+
+  #status {
+    font-size: 100px;
+  }
+
+  #time_left {
+    font-size: 50px;
+  }
+/* 
+  #button {
+    width: 500px;
+    height: 65px;
+    background-color: lightgreen;
+    font-size: 50px;
+  } */
+</style>
