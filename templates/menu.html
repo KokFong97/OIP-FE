@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>iSyringe</title>
+    <meta name="author" content="David Grzyb">
+    <meta name="description" content="">
+
+    <!-- Tailwind -->
+    <link href="https://unpkg.com/tailwindcss/dist/tailwind.min.css" rel="stylesheet">
+    <style>
+        @import url('https://fonts.googleapis.com/css?family=Karla:400,700&display=swap');
+
+        .font-family-karla {
+            font-family: karla;
+        }
+
+        .loader {
+            border-top-color: #3498db;
+            -webkit-animation: spinner 1.5s linear infinite;
+            animation: spinner 1.5s linear infinite;
+        }
+
+        @-webkit-keyframes spinner {
+            0% {
+                -webkit-transform: rotate(0deg);
+            }
+            100% {
+                -webkit-transform: rotate(360deg);
+            }
+        }
+
+        @keyframes spinner {
+            0% {
+                transform: rotate(0deg);
+            }
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+        
+    </style>
+    
+    <!-- Font Awesome -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.13.0/js/all.min.js" integrity="sha256-KzZiKy0DWYsnwMF+X1DvQngQ2/FxF7MF3Ff72XcpuPs=" crossorigin="anonymous"></script>
+</head>
+<body class="bg-white font-family-karla">
+
+    <div class="flex flex-col h-screen">
+
+        <!-- Top Bar-->
+        <top-bar></top-bar>
+        <script src="{{url_for('static', filename='js/topbar.js')}}"></script>
+
+        <div class="flex flex-row w-screen mt-24 ">
+            
+            <div class="w-full h-3/4 container flex-grow-0 px-16 m-4" onclick=clean()>
+                <img class="object-contain flex-none justify-center m-auto h-full" src="{{url_for('static', filename='img/clean2.png')}}" alt="clean">
+            </div>
+
+            <div class="w-full h-3/4 container flex-grow-0 px-16 m-4" onclick=selfClean()>
+                <img class="object-contain flex-none justify-center m-auto h-full" src="{{url_for('static', filename='img/selfclean.png')}}" alt="syringe">
+            </div>
+
+        </div>
+
+        
+        <div id="loadDiv">
+
+        </div>
+
+        
+
+
+
+    </div>
+
+    
+
+</body>
+
+</html>
+
+<script>
+    function clean() {
+        var x = document.getElementById("loadDiv");
+        x.innerHTML = '<div wire:loading class="fixed top-12 left-0 right-0 bottom-0 w-full z-50 overflow-hidden bg-gray-700 opacity-75 flex flex-col items-center justify-center"><div class="loader ease-linear rounded-full border-4 border-t-4 border-gray-200 h-12 w-12 mb-4"></div><h2 class="text-center text-white text-xl font-semibold">Loading...</h2><p class="w-1/2 text-center text-white">This may take a few seconds, please wait.</p></div>';
+    }
+
+    function selfClean() {
+        var x = document.getElementById("loadDiv");
+        x.innerHTML = '<div wire:loading class="fixed top-12 left-0 right-0 bottom-0 w-full z-50 overflow-hidden bg-gray-700 opacity-75 flex flex-col items-center justify-center"><div class="loader ease-linear rounded-full border-4 border-t-4 border-gray-200 h-12 w-12 mb-4"></div><h2 class="text-center text-white text-xl font-semibold">Loading...</h2><p class="w-1/2 text-center text-white">This may take a few seconds, please wait.</p></div>';
+    }
+</script>

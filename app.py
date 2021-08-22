@@ -1,4 +1,4 @@
-from flask import Flask, jsonify, request, render_template
+from flask import Flask, jsonify, request, render_template,redirect,url_for
 import random
 import datetime
 
@@ -7,6 +7,14 @@ app = Flask(__name__)
 @app.route("/")
 def hello_world():
     return render_template("index2.html")
+
+@app.route("/menu")
+def menu():
+    return render_template("menu.html")
+
+@app.route("/loading")
+def loading():
+    return render_template("loading.html")
 
 @app.route("/updateHum")
 def updateHum():
