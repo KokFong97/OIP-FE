@@ -66,5 +66,22 @@
     //window.location.replace('/menu')
     window.location.href = "http://127.0.0.1:5000/menu";
   }
+
+  function updateClock() {
+        var now = new Date(), // current date
+        time = now.getHours() + ':' + now.getMinutes() + ':' + now.getSeconds();
+
+        // a cleaner way than string concatenation
+        date = [now.getDate(), 
+                now.getMonth(),
+                now.getFullYear()].join('/');
+
+        // set the content of the element with the ID time to the formatted string
+        document.getElementById('date').innerHTML = date;
+        document.getElementById('time').innerHTML = time;
+        // call this function again in 1000ms
+        setTimeout(updateClock, 1000);
+    }
+updateClock(); 
 </script>
 

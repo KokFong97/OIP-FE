@@ -12,9 +12,9 @@ def hello_world():
 def menu():
     return render_template("menu.html")
 
-@app.route("/loading")
-def loading():
-    return render_template("loading.html")
+@app.route("/clean")
+def clean():
+    return render_template("clean.html")
 
 @app.route("/updateHum")
 def updateHum():

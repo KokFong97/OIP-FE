@@ -20,8 +20,8 @@ class topBar extends HTMLElement {
                 </nav>
 
                 <div class="flex items-center justify-between text-sm uppercase no-underline text-white pr-6">
-                <a class="hover:text-gray-200 hover:underline px-4" href="#">23/8/2021</a>
-                <a class="hover:text-gray-200 hover:underline px-4" href="#">2:22am</a>
+                <a id="date" class="hover:text-gray-200 hover:underline px-4" href="#">23/8/2021</a>
+                <a id="time" class="hover:text-gray-200 hover:underline px-4" href="#">2:22am</a>
 
                 </div>
             </div>
