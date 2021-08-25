@@ -57,7 +57,7 @@
 
          <!-- Text Header -->
 
-         <div class="flex flex-row w-screen mt-8 ml-20 space-x-40 ">
+         <div class="flex flex-row w-screen mt-8 ml-20 space-x-40 border">
             
             <div class="flex items-center ">
                 <a class=" text-gray-800 hover:text-gray-700 text-xl" href="#">
@@ -73,7 +73,7 @@
 
         </div>     
 
-        <div class="flex flex-row h-1/2 w-screen mt-4 ">
+        <div class="flex flex-row h-1/2 w-screen mt-4 border">
             
             <div class="w-full container flex-grow-0 px-16">
                 <img class="object-contain flex-none justify-center m-auto h-full" src="{{url_for('static', filename='img/syringe.gif')}}" alt="syringeGif">
@@ -84,8 +84,11 @@
             </div>
 
         </div>       
-        <div class="flex flex-col items-center">
-            <a href="#" onclick=clean() class="w-1/6 bg-blue-800 text-white font-bold text-sm uppercase rounded hover:bg-blue-700 flex items-center justify-center px-2 py-3 mt-8">
+        <div class="flex flex-row items-center">
+            <a href="#" onclick=back() class="w-1/6 bg-blue-800 text-white font-bold text-sm uppercase rounded hover:bg-blue-700 flex items-center justify-center ml-60 px-2 py-3 mt-8">
+                Back
+            </a>
+            <a href="#" onclick=clean() class="w-1/6 bg-blue-800 text-white font-bold text-sm uppercase rounded hover:bg-blue-700 flex items-center justify-center ml-12 px-2 py-3 mt-8">
                 next
             </a>
         </div>
@@ -107,8 +110,34 @@
 <script>
 
   function clean() {
-        var x = document.getElementById("loadDiv");
-        x.innerHTML = '<div wire:loading class="fixed top-12 left-0 right-0 bottom-0 w-full z-50 overflow-hidden bg-gray-700 opacity-75 flex flex-col items-center justify-center"><div class="loader ease-linear rounded-full border-4 border-t-4 border-gray-200 h-12 w-12 mb-4"></div><h2 class="text-center text-white text-xl font-semibold">Detecting Syringes...</h2><p class="w-1/2 text-center text-white">This may take a few seconds, please wait.</p></div>';
+        window.location.href = "http://127.0.0.1:5000/progressbar"
+        // var x = document.getElementById("loadDiv");
+        // x.innerHTML = '<div wire:loading class="fixed top-12 left-0 right-0 bottom-0 w-full z-50 overflow-hidden bg-gray-700 opacity-75 flex flex-col items-center justify-center"><div class="loader ease-linear rounded-full border-4 border-t-4 border-gray-200 h-12 w-12 mb-4"></div><h2 class="text-center text-white text-xl font-semibold">Detecting Syringes...</h2><p class="w-1/2 text-center text-white">This may take a few seconds, please wait.</p></div>';
+
+        // var myHeaders = new Headers();
+        // myHeaders.append("Content-Type", "application/json");
+
+        // var raw = JSON.stringify({
+        //     "test": "hello"
+        // });
+
+        // var requestOptions = {
+        // method: 'POST',
+        // headers: myHeaders,
+        // body: raw,
+        // redirect: 'follow'
+        // };
+
+        // fetch("http://127.0.0.1:5000/syringeDetection", requestOptions)
+        // .then(response => response.text())
+        // .then(result => console.log(result))
+        // .then(result=> window.location.href = "http://127.0.0.1:5000/progressbar")
+        // .catch(error => console.log('error', error));
+    
+    }
+
+    function back(){
+        window.location.href = "http://127.0.0.1:5000/"
     }
 
   function updateClock() {

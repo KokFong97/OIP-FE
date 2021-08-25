@@ -1,0 +1,450 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>iSyringe</title>
+    <meta name="author" content="David Grzyb">
+    <meta name="description" content="">
+
+    <!-- Tailwind -->
+    <link href="https://unpkg.com/tailwindcss/dist/tailwind.min.css" rel="stylesheet">
+    <link href="//netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.css" rel="stylesheet">
+    <style>
+        @import url('https://fonts.googleapis.com/css?family=Karla:400,700&display=swap');
+
+        .font-family-karla {
+            font-family: karla;
+        }
+        
+        .container{
+            width: 100%
+        }
+
+        .progressbar{
+            counter-reset: step;
+        }
+
+        .progressbar li{
+            list-style-type: none;
+            float: left;
+            width : 25%;
+            position: relative;
+            text-align: center;
+        }
+
+        .progressbar li:before{
+            content:counter(step);
+            counter-increment: step;
+            width: 30px;
+            height: 30px;
+            line-height:30px;
+            border: 1px solid #ddd;
+            display:block;
+            text-align: center;
+            margin: 0 auto 10px auto;
+            border-radius: 50%;
+            background-color: white;
+        }
+
+        .progressbar li:after{
+            content: '';
+            position: absolute;
+            width: 100%;
+            height: 1px;
+            background-color: #ddd;
+            top: 15px;
+            left: -50%;
+            z-index: -1;
+        }
+
+        .progressbar li:first-child:after{
+            content:none;
+        }
+
+        .progressbar li.done {
+            color: blue;
+        }
+
+        .progressbar li.done:before{
+            border-color:blue;
+        }
+
+        .progressbar li.done + li:after{
+            background-color: blue;
+        }
+
+        .progressbar li.active {
+            color: blue;
+        }
+
+        .progressbar li.active:before{
+            border-color:blue;
+        }
+
+        .shim-green {
+            position: relative;
+            overflow: hidden;
+            background-color: rgba(0, 255, 0, 0.7);
+        }
+        .shim-green::after {
+            position: absolute;
+            top: 0;
+            right: 0;
+            bottom: 0;
+            left: 0;
+            transform: translateX(-100%);
+            background-image: linear-gradient(
+                90deg,
+                rgba(233, 233, 233, 1) 0,
+                rgba(233, 233, 233, 0.9) 50%,
+                rgba(233, 233, 233, 0.8) 100%
+            );
+            animation: shimmer 2s ease-out infinite;
+            content: "";
+        }
+
+        .shim-blue {
+            position: relative;
+            overflow: hidden;
+            background-color: rgba(0, 155, 255, 0.7);
+        }
+        .shim-blue::after {
+            position: absolute;
+            top: 0;
+            right: 0;
+            bottom: 0;
+            left: 0;
+            transform: translateX(-100%);
+            background-image: linear-gradient(
+                90deg,
+                rgba(233, 233, 233, 1) 0,
+                rgba(233, 233, 233, 0.9) 50%,
+                rgba(233, 233, 233, 0.8) 100%
+            );
+            animation: shimmer 2.5s ease-out infinite;
+            content: "";
+        }
+
+        .shim-red {
+            position: relative;
+            overflow: hidden;
+            background-color: rgba(255, 0, 0, 0.7);
+        }
+        .shim-red::after {
+            position: absolute;
+            top: 0;
+            right: 0;
+            bottom: 0;
+            left: 0;
+            transform: translateX(-100%);
+            background-image: linear-gradient(
+                90deg,
+                rgba(233, 233, 233, 1) 0,
+                rgba(233, 233, 233, 0.9) 50%,
+                rgba(233, 233, 233, 0.8) 100%
+            );
+            animation: shimmer 3s ease-out infinite;
+            content: "";
+        }
+
+        @keyframes shimmer {
+            100% {
+                transform: translateX(0%);
+                opacity: 0;
+            }
+        }
+       
+
+        html, body {margin: 0; height: 100%; overflow: hidden}
+        
+    </style>
+    
+    <!-- Font Awesome -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.13.0/js/all.min.js" integrity="sha256-KzZiKy0DWYsnwMF+X1DvQngQ2/FxF7MF3Ff72XcpuPs=" crossorigin="anonymous"></script>
+</head>
+<body class="font-family-karla">
+
+    <div class="flex flex-col h-screen">
+
+        <!-- Top Bar-->
+        <top-bar></top-bar>
+        <script src="{{url_for('static', filename='js/topbar.js')}}"></script>
+
+        <div class="container mt-4 mb-4" >
+            <ul class="progressbar">
+                <li id="cleaning" class="active">Cleaning</li>
+                <li id="drying" class="">Drying</li>
+                <li id="sterilize" class="">Sterilizing</li>
+                <li id="finish" class="">Done</li>
+            </ul>
+        </div>
+          
+        <hr />
+
+        <div class="w-full container mx-auto flex-grow-0  h-1/2">
+            <img id="processImage" class="object-contain flex-none justify-center m-auto h-full" src="{{url_for('static', filename='img/washing.png')}}" alt="syringe">
+        </div>
+
+        <div class="flex">
+            <div id="loadingBar" class="w-1/4 mx-auto bg-gray-200 rounded">
+                <div style="width: 100%" class="absolute top-0 h-4 rounded shim-blue"></div>
+            </div>
+          
+        </div>
+
+        <div id="bottomRow" class="flex flex-row">
+
+            <div class="flex flex-col mt-2 ml-4">
+                <p id="timeElapsed" class="text-lg text-gray-600">
+                    Time elapsed : 0:21:19
+                </p>
+                <p id="timeEstimated" class="text-lg text-gray-600">
+                    Estimated ~ 41 mins
+                </p>
+            </div>
+            
+            <div id="stopButton" class="w-3/4 h-10 relative h-16" style="z-index: 900;">
+                <img onclick=showModal() class="h-full absolute top-0 right-2" src="{{url_for('static', filename='img/stop.png')}}" alt="syringe">
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- This example requires Tailwind CSS v2.0+ -->
+<div class="fixed z-10 inset-0 overflow-y-auto" aria-labelledby="modal-title" role="dialog" aria-modal="true">
+    <div class="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
+      <!--
+        Background overlay, show/hide based on modal state.
+  
+        Entering: "ease-out duration-300"
+          From: "opacity-0"
+          To: "opacity-100"
+        Leaving: "ease-in duration-200"
+          From: "opacity-100"
+          To: "opacity-0"
+      -->
+      <div id="greybackground" class="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity" aria-hidden="true" style="visibility: hidden;"></div>
+  
+      <!-- This element is to trick the browser into centering the modal contents. -->
+      <span class="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">&#8203;</span>
+  
+      <!--
+        Modal panel, show/hide based on modal state.
+  
+        Entering: "ease-out duration-300"
+          From: "opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
+          To: "opacity-100 translate-y-0 sm:scale-100"
+        Leaving: "ease-in duration-200"
+          From: "opacity-100 translate-y-0 sm:scale-100"
+          To: "opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
+      -->
+      <div id="stopModal" class="inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full" style="visibility: hidden;">
+        <div class="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
+          <div class="sm:flex sm:items-start">
+            <div class="mx-auto flex-shrink-0 flex items-center justify-center h-12 w-12 rounded-full bg-red-100 sm:mx-0 sm:h-10 sm:w-10">
+              <!-- Heroicon name: outline/exclamation -->
+              <svg class="h-6 w-6 text-red-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+              </svg>
+            </div>
+            <div class="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left">
+              <h3 id="header" class="text-lg leading-6 font-medium text-gray-900" id="modal-title">
+                Terminate process
+              </h3>
+              <div class="mt-2">
+                <p id="content" class="text-sm text-gray-500">
+                  Are you sure you want to terminate your entire process? You will need to restart the entire process. This action cannot be undone.
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="bg-gray-50 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
+          <button id="confirmButton" type="button" onclick=terminate() class="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-red-600 text-base font-medium text-white hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 sm:ml-3 sm:w-auto sm:text-sm">
+            Terminate
+          </button>
+          <button type="button" onclick=cancel() class="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm">
+            Cancel
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+    
+
+</body>
+
+</html>
+
+<script>
+    function clean() {
+        window.location.href = "http://127.0.0.1:5000/clean"; 
+    }
+
+    function selfClean() {
+
+    }
+
+    function terminate(){
+        window.location.href = "http://127.0.0.1:5000/"; 
+    }
+
+    function showModal(){
+        console.log("hello")
+        var greybackground = document.getElementById("greybackground");
+        var stopModal = document.getElementById("stopModal");
+        greybackground.style.visibility = "visible";
+        
+        stopModal.style.visibility = "visible";
+        var stopButton = document.getElementById("stopButton");
+        stopButton.style.visibility = "hidden";
+    }
+
+    function cancel(){
+        var greybackground = document.getElementById("greybackground");
+        var stopModal = document.getElementById("stopModal");
+
+        greybackground.style.visibility = "hidden";
+        stopModal.style.visibility = "hidden";
+        var stopButton = document.getElementById("stopButton");
+        stopButton.style.visibility = "visible";
+    }
+    
+    function secondsToTime(secs)
+    {
+        secs = Math.round(secs);
+        var hours = Math.floor(secs / (60 * 60));
+
+        var divisor_for_minutes = secs % (60 * 60);
+        var minutes = Math.floor(divisor_for_minutes / 60);
+
+        var divisor_for_seconds = divisor_for_minutes % 60;
+        var seconds = Math.ceil(divisor_for_seconds);
+
+        var obj = {
+            "h": hours,
+            "m": minutes,
+            "s": seconds
+        };
+        return obj;
+    }
+
+    function updateClock() {
+        var now = new Date(), // current date
+        time = now.getHours() + ':' + now.getMinutes() + ':' + now.getSeconds();
+
+        // a cleaner way than string concatenation
+        date = [now.getDate(), 
+                now.getMonth(),
+                now.getFullYear()].join('/');
+
+        // set the content of the element with the ID time to the formatted string
+        document.getElementById('date').innerHTML = date;
+        document.getElementById('time').innerHTML = time;
+        // call this function again in 1000ms
+        setTimeout(updateClock, 1000);
+    }
+
+    var startTime = new Date();
+    var seconds
+    var elapsedTimer;
+    function timeElapsed(){
+        endTime = new Date();
+        var timeDiff = endTime - startTime; //in ms
+        // strip the ms
+        timeDiff /= 1000;
+
+        // get seconds 
+        seconds = Math.round(timeDiff);
+        document.getElementById('timeElapsed').innerHTML = "Time elapsed : "+secondsToTime(seconds).h + ":"+secondsToTime(seconds).m+":"+secondsToTime(seconds).s;
+
+        elapsedTimer = setTimeout(timeElapsed,1000);
+
+        if(secondsToTime(seconds).m == "0" && secondsToTime(seconds).s == "3"){
+            cleanDone();
+        }
+        else if(secondsToTime(seconds).m == "0" && secondsToTime(seconds).s == "7"){
+            dryDone();
+        }
+        else if(secondsToTime(seconds).m == "0" && secondsToTime(seconds).s == "10"){
+            sterilizeDone();
+        }
+
+        
+    }
+
+    var estimatedTimer;
+    function timeEstimated(){
+        var myHeaders = new Headers();
+        myHeaders.append("Content-Type", "application/json");
+
+        var raw = JSON.stringify({
+            "temperature": 30,
+            "humidity": 80,
+            "timePassed": 2890
+        });
+
+        var requestOptions = {
+            method: 'POST',
+            headers: myHeaders,
+            body: raw,
+            redirect: 'follow'
+        };
+
+        fetch("http://127.0.0.1:5000/timerML", requestOptions)
+        .then(response => response.text())
+        .then(result => document.getElementById('timeEstimated').innerHTML = "Estimated ~ " + result)
+        .catch(error => console.log('error', error));
+        estimatedTimer = setTimeout(timeEstimated,1000);
+    }
+
+    function cleanDone(){
+        var cleaning = document.getElementById("cleaning");
+        cleaning.classList.remove("active");
+        cleaning.classList.add("done");
+
+        var drying = document.getElementById("drying");
+        drying.classList.add("active");
+
+        document.getElementById("processImage").src = "{{url_for('static', filename='img/drying.png')}}";
+    }
+
+    function dryDone(){
+        var drying = document.getElementById("drying");
+        drying.classList.remove("active");
+        drying.classList.add("done");
+
+        var sterilize = document.getElementById("sterilize");
+        sterilize.classList.add("active");
+
+        document.getElementById("processImage").src = "{{url_for('static', filename='img/sterilizing.png')}}";
+    }
+
+    function sterilizeDone(){
+        var sterilize = document.getElementById("sterilize");
+        sterilize.classList.remove("active");
+        sterilize.classList.add("done");
+
+        var finish = document.getElementById("finish");
+        finish.classList.add("active");
+        
+        document.getElementById("processImage").src = "{{url_for('static', filename='img/syringe.png')}}";
+        document.getElementById("loadingBar").style.visibility = "hidden";
+
+        document.getElementById("header").innerHTML = "Process done!"
+        document.getElementById("content").innerHTML = "The entire process is done. Total time taken is "+ secondsToTime(seconds).m+" mins "+secondsToTime(seconds).s +" seconds. Please remove your syringes. Press confirm to go back to main page."
+        document.getElementById("confirmButton").innerHTML = "Confirm"
+
+        showModal()
+
+        clearTimeout(estimatedTimer);
+        clearTimeout(elapsedTimer);
+    }
+
+updateClock(); 
+timeElapsed();
+timeEstimated();
+</script>
