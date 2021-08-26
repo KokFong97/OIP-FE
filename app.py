@@ -3,6 +3,11 @@ import random
 import datetime
 import sys
 import time
+import board
+import adafruit_dht
+
+# Initial the dht device, with data pin connected to:
+dhtDevice = adafruit_dht.DHT11(board.D18, use_pulseio=False)
 
 app = Flask(__name__)
 
@@ -28,8 +33,16 @@ def syringeDetection():
 
 @app.route("/updateTempHum", methods = ['GET'])
 def updateHum():
-    humidity,temperature = Adafruit_DHT.read_retry(Adafruit_DHT.DHT11,11)
-    return jsonify(humid = str(humidity), temp = str(temperature))
+    success = False
+    while not success:
+        try:
+            temperature_c = dhtDevice.temperature
+            humidity = dhtDevice.humidity
+            success = True
+            print ('humidity:', humidity, 'temperature', temperature_c)
+            return jsonify(humid=str(humidity), temp=str(temperature_c))
+        except RuntimeError as error:
+            continue
 
 @app.route('/timerML', methods = ['POST'])
 def timerML():
