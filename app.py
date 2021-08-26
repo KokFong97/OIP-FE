@@ -1,6 +1,8 @@
 from flask import Flask, jsonify, request, render_template,redirect,url_for
 import random
 import datetime
+import sys
+import time
 
 app = Flask(__name__)
 
@@ -24,9 +26,10 @@ def pBar():
 def syringeDetection():
     return("test")
 
-@app.route("/updateTempHum")
+@app.route("/updateTempHum", methods = ['GET'])
 def updateHum():
-    return jsonify(str(random.randint(0,100)))
+    humidity,temperature = Adafruit_DHT.read_retry(Adafruit_DHT.DHT11,11)
+    return jsonify(humid = str(humidity), temp = str(temperature))
 
 @app.route('/timerML', methods = ['POST'])
 def timerML():

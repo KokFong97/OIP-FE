@@ -14,8 +14,8 @@ class topBar extends HTMLElement {
 
                 <nav>
                     <ul class="flex items-center justify-between font-bold text-sm text-white uppercase no-underline">
-                        <li><a class="hover:text-gray-200 hover:underline px-4" href="#">Temperature - 28°C</a></li>
-                        <li><a class="hover:text-gray-200 hover:underline px-4" href="#">Humidity - 75%</a></li>
+                        <li><a id="temp" class="hover:text-gray-200 hover:underline px-4" href="#">Temperature - 28°C</a></li>
+                        <li><a id="humid" class="hover:text-gray-200 hover:underline px-4" href="#">Humidity - 75%</a></li>
                     </ul>
                 </nav>
 
