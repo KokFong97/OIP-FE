@@ -99,7 +99,7 @@
       {document.getElementById('temp').innerHTML = "Temperature - "+json.temp+"°C";
         document.getElementById('humid').innerHTML = "Humidity - "+json.humid+"%";})
       .catch(error => console.log('error', error));
-      setTimeout(updateClock, 1000);  
+      setTimeout(updateTempHumid, 1000);  
   }
 
 updateClock(); 

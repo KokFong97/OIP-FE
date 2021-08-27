@@ -290,6 +290,18 @@
 
     function terminate(){
         window.location.href = "http://127.0.0.1:5000/"; 
+        var raw = "";
+
+        var requestOptions = {
+            method: 'POST',
+            body: raw,
+            redirect: 'follow'
+        };
+
+        fetch("http://127.0.0.1:5000/stop", requestOptions)
+        .then(response => response.text())
+        .then(result => console.log(result))
+        .catch(error => console.log('error', error));
     }
 
     function showModal(){
@@ -402,6 +414,8 @@
     }
 
     function cleanDone(){
+        
+
         var cleaning = document.getElementById("cleaning");
         cleaning.classList.remove("active");
         cleaning.classList.add("done");
@@ -410,6 +424,20 @@
         drying.classList.add("active");
 
         document.getElementById("processImage").src = "{{url_for('static', filename='img/drying.png')}}";
+
+        var raw = "";
+
+        var requestOptions = {
+            method: 'POST',
+            body: raw,
+            redirect: 'follow'
+        };
+
+        fetch("http://127.0.0.1:5000/drying", requestOptions)
+        .then(response => response.text())
+        .then(result => console.log(result))
+        .catch(error => console.log('error', error));
+
     }
 
     function dryDone(){
@@ -443,8 +471,38 @@
         clearTimeout(estimatedTimer);
         clearTimeout(elapsedTimer);
     }
+    function updateTempHumid(){
+    var raw = "";
 
+    var requestOptions = {
+      method: 'GET',
+      redirect: 'follow'
+    };
+
+    fetch("http://127.0.0.1:5000/updateTempHum", requestOptions)
+      .then(response => response.json())
+      .then(function(json)
+      {document.getElementById('temp').innerHTML = "Temperature - "+json.temp+"°C";
+        document.getElementById('humid').innerHTML = "Humidity - "+json.humid+"%";})
+      .catch(error => console.log('error', error));
+      setTimeout(updateTempHumid, 1000);
+  }
 updateClock(); 
 timeElapsed();
-//timeEstimated();
+timeEstimated();
+updateTempHumid();
+
+var raw = "";
+
+        var requestOptions = {
+            method: 'POST',
+            body: raw,
+            redirect: 'follow'
+        };
+
+        fetch("http://127.0.0.1:5000/cleaning", requestOptions)
+        .then(response => response.text())
+        .then(result => console.log(result))
+        .catch(error => console.log('error', error));
+
 </script>

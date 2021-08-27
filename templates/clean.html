@@ -155,6 +155,25 @@
         // call this function again in 1000ms
         setTimeout(updateClock, 1000);
     }
+
+  function updateTempHumid(){
+    var raw = "";
+
+    var requestOptions = {
+      method: 'GET',
+      redirect: 'follow'
+    };
+
+    fetch("http://127.0.0.1:5000/updateTempHum", requestOptions)
+      .then(response => response.json())
+      .then(function(json)
+      {document.getElementById('temp').innerHTML = "Temperature - "+json.temp+"°C";
+        document.getElementById('humid').innerHTML = "Humidity - "+json.humid+"%";})
+      .catch(error => console.log('error', error));
+      setTimeout(updateTempHumid, 1000);
+  }
+
 updateClock(); 
+updateTempHumid();
 </script>
 
