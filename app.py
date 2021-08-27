@@ -55,5 +55,35 @@ def timerML():
     print(timePassed)
     return(jsonify(str(random.randint(0,100))))
 
+@app.route("/cleaning", methods = ['POST'])
+def syringeDetection():
+    ser.write(b"C")
+    return("success")
+
+@app.route('/cleaning', methods = ['POST'])
+def cleaning():
+    ser.write(b"C")
+    return("success")
+
+@app.route('/draining', methods = ['POST'])
+def draining():
+    ser.write(b"D")
+    return("success")
+
+@app.route('/drying', methods = ['POST'])
+def drying():
+    ser.write(b"E")
+    return("success")
+
+@app.route('/whole', methods = ['POST'])
+def whole():
+    ser.write(b"G")
+    return("success")
+
+@app.route('/stop', methods = ['POST'])
+def stop():
+    ser.write(b"S")
+    return("success")
+
 if __name__ == "__main__":
     app.run(debug=True)
