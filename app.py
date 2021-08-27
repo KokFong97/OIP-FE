@@ -64,12 +64,12 @@ def cleaning():
     ser.write(b"C")
     return("success")
 
-@app.route('/draining', methods = ['POST'])
+@app.route('/drying', methods = ['POST'])
 def draining():
     ser.write(b"D")
     return("success")
 
-@app.route('/drying', methods = ['POST'])
+@app.route('/sterilizing', methods = ['POST'])
 def drying():
     ser.write(b"E")
     return("success")
