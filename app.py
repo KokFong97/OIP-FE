@@ -5,6 +5,7 @@ import sys
 import time
 import board
 import adafruit_dht
+import serial
 
 # Initial the dht device, with data pin connected to:
 dhtDevice = adafruit_dht.DHT11(board.D18, use_pulseio=False)
