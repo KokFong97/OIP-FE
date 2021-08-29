@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Medical QR Generator</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta charset="UTF-8" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.9.3/css/bulma.min.css"
+    />
+    <style>
+      #title {
+        position: absolute;
+        top: 10%;
+        left: 50%;
+        margin-right: -50%;
+        transform: translate(-50%, -50%);
+      }
+      .title {
+        font-size: 1.7rem;
+      }
+      .box {
+        width: 256px !important;
+        height: 256px !important;
+        padding: 1em !important;
+      }
+
+      .column {
+        width: 256px !important;
+        height: 256px !important;
+        padding: 0 !important;
+      }
+
+      /* Medium devices (tablets, 768px and up) */
+      @media (min-width: 768px) {
+        .title {
+          font-size: 2rem;
+        }
+        .box {
+          width: 400px !important;
+          height: 400px !important;
+          padding: 1em !important;
+        }
+
+        .column {
+          width: 400px !important;
+          height: 400px !important;
+          padding: 0 !important;
+        }
+      }
+
+      /* Large devices (desktops, 992px and up) */
+      @media (min-width: 992px) {
+        .title {
+          font-size: 2rem;
+        }
+        .box {
+          width: 400px !important;
+          height: 400px !important;
+          padding: 1em !important;
+        }
+
+        .column {
+          width: 400px !important;
+          height: 400px !important;
+          padding: 0 !important;
+        }
+      }
+    </style>
+  </head>
+  <body style="height: 100vh;">
+    <h1 id="title" class="title">iSyringe QR Generator</h1>
+    <div
+      class="columns is-mobile is-vcentered is-centered has-text-centered"
+      style="height: 100%;"
+    >
+      <div class="column is-half">
+        <div class="box">
+          <div id="box" class="image is-512x512 mt-6"></div>
+        </div>
+        <button id="generateBtn" class="button is-info">
+          Generate QR Code
+        </button>
+      </div>
+    </div>
+  </body>
+  <script src="https://www.gstatic.com/firebasejs/8.2.3/firebase.js"></script>
+  <script src="./static/js/datamatrix.min.js"></script>
+  <script>
+    const firebaseConfig = {
+      apiKey: "AIzaSyCu6xL1fLdkW0ve7uckKv5sdHcCEB1hapo",
+      authDomain: "oip-project.firebaseapp.com",
+      databaseURL: "https://oip-project-default-rtdb.asia-southeast1.firebasedatabase.app",
+      projectId: "oip-project",
+      storageBucket: "oip-project.appspot.com",
+      messagingSenderId: "38208108109",
+      appId: "1:38208108109:web:f6591736669d310fc30e04",
+      measurementId: "G-WJDM6XY3VE"
+    };
+  
+    // Initialize Firebase
+    firebase.initializeApp(firebaseConfig);
+    //const dbRef = firebase.database().ref();
+    var database = firebase.database();
+
+    const dbRef = firebase.database().ref();
+    console.log(dbRef)
+
+    // // Get
+    // dbRef.child("12345").get().then((snapshot) => {
+    // if (snapshot.exists()) {
+    //     console.log(snapshot.val());
+    // } else {
+    //     console.log("No data available");
+    // }
+    // }).catch((error) => {
+    //     console.error(error);
+    // });
+
+    // // Set
+    // firebase.database().ref('23456').set({
+    //     reuseCount:"8",
+    //     uvTime:"324574"
+    // });
+
+    let generateBtn = document.getElementById("generateBtn");
+    function randomHashGenerate() {
+      function chr4() {
+        return Math.random().toString(16).slice(-4);
+      }
+      return (chr4() + "-" + chr4() + "-" + chr4()).toUpperCase();
+    }
+
+    clear = function( o ) {
+      while( o.childNodes[ 0 ] ) {
+        o.removeChild( o.childNodes[ 0 ] );
+      }
+    }
+
+    document.getElementById("generateBtn").addEventListener("click", () => {
+      generateBtn.classList.add("is-loading");
+      const uuid = randomHashGenerate();
+      setTimeout(() => {
+        generateBtn.classList.remove("is-loading");
+        clear(document.getElementById("box"))
+        var svgNode = DATAMatrix(uuid);
+        //document.getElementById("box").removeChild();
+        document.getElementById("box").appendChild(svgNode);
+        // var qrcode = new QRCode(document.getElementById("output"), {
+        //   text: uuid,
+        //   width: 128,
+        //   height: 128,
+        //   colorDark: "#000000",
+        //   colorLight: "#ffffff",
+        //   correctLevel: QRCode.CorrectLevel.H
+        // });
+      }, 200);
+
+      // firebase.database().ref(uuid).set({
+      //       reuseCount:0,
+      //       uvTime:0
+      //   });
+
+    });
+  </script>
+
+
+</html>

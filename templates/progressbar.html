@@ -162,6 +162,7 @@
     
     <!-- Font Awesome -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.13.0/js/all.min.js" integrity="sha256-KzZiKy0DWYsnwMF+X1DvQngQ2/FxF7MF3Ff72XcpuPs=" crossorigin="anonymous"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.2.3/firebase.js"></script>
 </head>
 <body class="font-family-karla">
 
@@ -280,6 +281,46 @@
 </html>
 
 <script>
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyCu6xL1fLdkW0ve7uckKv5sdHcCEB1hapo",
+      authDomain: "oip-project.firebaseapp.com",
+      databaseURL: "https://oip-project-default-rtdb.asia-southeast1.firebasedatabase.app",
+      projectId: "oip-project",
+      storageBucket: "oip-project.appspot.com",
+      messagingSenderId: "38208108109",
+      appId: "1:38208108109:web:f6591736669d310fc30e04",
+      measurementId: "G-WJDM6XY3VE"
+    };
+  
+    // Initialize Firebase
+    firebase.initializeApp(firebaseConfig);
+    //const dbRef = firebase.database().ref();
+    var database = firebase.database();
+
+    const dbRef = firebase.database().ref();
+    
+    let arr = ["3362-FD3E-32AE","4EC7-EB6E-5575","A9E9-F808-91EA"]
+    const map = new Map();
+
+    arr.forEach(function(item, index, array) {
+        dbRef.child(item).get().then((snapshot) => {
+        if (snapshot.exists()) {
+            console.log(snapshot.val());
+            map.set(item,snapshot.val());
+        } else {
+            console.log("No data available");
+        }
+        }).catch((error) => {
+            console.error(error);
+        });
+    })
+
+    
+    
+
+
+
     function clean() {
         window.location.href = "http://127.0.0.1:5000/clean"; 
     }
@@ -428,6 +469,7 @@
 
     }
 
+    var uvStartTime;
     function dryDone(){
         var drying = document.getElementById("drying");
         drying.classList.remove("active");
@@ -437,10 +479,34 @@
         sterilize.classList.add("active");
 
         document.getElementById("processImage").src = "{{url_for('static', filename='img/sterilizing.png')}}";
-
+        uvStartTime = new Date();
     }
 
     function sterilizeDone(){
+
+        uvEndTime = new Date();
+        var timeDiff = uvEndTime - uvStartTime; //in ms
+        // strip the ms
+        timeDiff /= 1000;
+
+        // get seconds 
+        seconds = Math.round(timeDiff);
+
+        console.log("Time taken for sterilize is "+seconds.toString())
+        
+        // for (const [key, value] of map) {
+        //     map.set(key,{"reuseCount":map.get(key)['reuseCount']+1,"uvTime":map.get(key)['uvTime']+seconds})
+        // }
+
+        for (const [key, value] of map) {
+            obj = map.get(key)
+            firebase.database().ref(key).set({
+                "reuseCount":map.get(key)['reuseCount']+1,
+                "uvTime":map.get(key)['uvTime']+seconds
+            });
+        }
+        
+
         var sterilize = document.getElementById("sterilize");
         sterilize.classList.remove("active");
         sterilize.classList.add("done");
@@ -476,6 +542,7 @@
       .catch(error => console.log('error', error));
       setTimeout(updateTempHumid, 1000);
   }
+  
 updateClock(); 
 timeElapsed();
 timeEstimated();
