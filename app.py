@@ -47,6 +47,10 @@ def clean():
 def pBar():
     return render_template("progressbar.html")
 
+@app.route("/scanner")
+def scanner():
+    return render_template("scanner.html")
+
 @app.route("/syringeDetection", methods = ['POST'])
 def syringeDetection():
     return("test")

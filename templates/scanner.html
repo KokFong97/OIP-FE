@@ -46,6 +46,7 @@
     
     <!-- Font Awesome -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.13.0/js/all.min.js" integrity="sha256-KzZiKy0DWYsnwMF+X1DvQngQ2/FxF7MF3Ff72XcpuPs=" crossorigin="anonymous"></script>
+    
 </head>
 <body class="bg-white font-family-karla">
 
@@ -61,13 +62,7 @@
             
             <div class="flex items-center ">
                 <a class=" text-gray-800 hover:text-gray-700 text-xl" href="#">
-                    Insert syringe into cleaner
-                </a>
-            </div>
-
-            <div class="flex items-center ">
-                <a class=" text-gray-800 hover:text-gray-700 text-xl" href="#">
-                    Place plunger into basin
+                    Scan QR
                 </a>
             </div>
 
@@ -75,13 +70,7 @@
 
         <div class="flex flex-row h-1/2 w-screen mt-4">
             
-            <div class="w-full container flex-grow-0 px-16">
-                <img class="object-contain flex-none justify-center m-auto h-full" src="{{url_for('static', filename='img/syringe.gif')}}" alt="syringeGif">
-            </div>
-
-            <div class="w-full container flex-grow-0 px-16">
-                <img class="object-contain flex-none justify-center m-auto h-full" src="{{url_for('static', filename='img/plunger.gif')}}" alt="plungerGif">
-            </div>
+            <video id="qr-video"></video>
 
         </div>       
         <div class="flex flex-row items-center">
@@ -109,8 +98,10 @@
 
 <script>
 
+   
+
   function clean() {
-        window.location.href = "http://127.0.0.1:5000/scanner"
+        window.location.href = "http://127.0.0.1:5000/progressbar"
         // var x = document.getElementById("loadDiv");
         // x.innerHTML = '<div wire:loading class="fixed top-12 left-0 right-0 bottom-0 w-full z-50 overflow-hidden bg-gray-700 opacity-75 flex flex-col items-center justify-center"><div class="loader ease-linear rounded-full border-4 border-t-4 border-gray-200 h-12 w-12 mb-4"></div><h2 class="text-center text-white text-xl font-semibold">Detecting Syringes...</h2><p class="w-1/2 text-center text-white">This may take a few seconds, please wait.</p></div>';
 
@@ -137,7 +128,7 @@
     }
 
     function back(){
-        window.location.href = "http://127.0.0.1:5000/menu"
+        window.location.href = "http://127.0.0.1:5000/clean"
     }
 
   function updateClock() {
