@@ -573,15 +573,34 @@
     }
   }
 
+  let globalHumidity = 0
+  let globalTemperature = 0
+  let dryStartTime = 0
+
   var estimatedTimer;
   function timeEstimated() {
     var myHeaders = new Headers();
     myHeaders.append("Content-Type", "application/json");
 
+    if(dryStartTime == 0){
+      seconds = 0
+    }else{
+      dryEndTime = new Date();
+      var timeDiff = dryEndTime - dryStartTime; //in ms
+      // strip the ms
+      timeDiff /= 1000;
+
+      // get seconds
+      seconds = Math.round(timeDiff);
+    }
+    
+
+    console.log("Time taken for drying is " + seconds.toString());
+
     var raw = JSON.stringify({
-      temperature: 30,
-      humidity: 80,
-      timePassed: 2890,
+      temperature: globalTemperature,
+      humidity: globalHumidity,
+      timePassed: seconds,
     });
 
     var requestOptions = {
@@ -596,12 +615,11 @@
       .then(
         (result) =>
           (document.getElementById("timeEstimated").innerHTML =
-            "Estimated ~ " + result)
+            "Estimated left ~ " + result)
       )
       .catch((error) => console.log("error", error));
     estimatedTimer = setTimeout(timeEstimated, 1000);
   }
-
   function cleanDone() {
     var cleaning = document.getElementById("cleaning");
     cleaning.classList.remove("active");
@@ -612,10 +630,13 @@
 
     document.getElementById("processImage").src =
       "{{url_for('static', filename='img/drying.png')}}";
+    dryStartTime = new Date();
   }
 
+  
   var uvStartTime;
   function dryDone() {
+   
     var drying = document.getElementById("drying");
     drying.classList.remove("active");
     drying.classList.add("done");
@@ -679,6 +700,9 @@
     clearTimeout(estimatedTimer);
     clearTimeout(elapsedTimer);
   }
+
+
+
   function updateTempHumid() {
     var raw = "";
 
@@ -690,6 +714,8 @@
     fetch("http://127.0.0.1:5000/updateTempHum", requestOptions)
       .then((response) => response.json())
       .then(function (json) {
+        globalHumidity = json.humid
+        globalTemperature = json.temp
         document.getElementById("temp").innerHTML =
           "Temperature - " + json.temp + "°C";
         document.getElementById("humid").innerHTML =
@@ -701,8 +727,8 @@
 
   updateClock();
   timeElapsed();
-  timeEstimated();
   updateTempHumid();
+  timeEstimated();
 
   var raw = "";
 
