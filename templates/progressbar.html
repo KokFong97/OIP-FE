@@ -198,7 +198,7 @@
         <img
           id="processImage"
           class="object-contain flex-none justify-center m-auto h-full"
-          src="{{url_for('static', filename='img/washing.png')}}"
+          src="{{url_for('static', filename='img/washing2.png')}}"
           alt="syringe"
         />
       </div>
@@ -611,7 +611,7 @@
     drying.classList.add("active");
 
     document.getElementById("processImage").src =
-      "{{url_for('static', filename='img/drying.png')}}";
+      "{{url_for('static', filename='img/drying2.png')}}";
   }
 
   var uvStartTime;
@@ -624,7 +624,7 @@
     sterilize.classList.add("active");
 
     document.getElementById("processImage").src =
-      "{{url_for('static', filename='img/sterilizing.png')}}";
+      "{{url_for('static', filename='img/sterilizing2.png')}}";
     uvStartTime = new Date();
   }
 
