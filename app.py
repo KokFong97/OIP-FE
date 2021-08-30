@@ -18,8 +18,8 @@ import sklearn.linear_model as LinearRegression
 # Initial the dht device, with data pin connected to:
 #dhtDevice = adafruit_dht.DHT11(board.D18, use_pulseio=False)
 
-ser = serial.Serial('/dev/ttyACM0', 9600, timeout=1)
-ser.flush()
+#ser = serial.Serial('/dev/ttyACM0', 9600, timeout=1)
+#ser.flush()
 
 # Firebase
 # Fetch the service account key JSON file contents

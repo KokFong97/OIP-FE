@@ -40,24 +40,24 @@
       <top-bar></top-bar>
       <script src="{{url_for('static', filename='js/topbar.js')}}"></script>
 
-      <div class="flex flex-row w-screen mt-24">
+      <div class="flex flex-row w-screen">
         <div
-          class="w-full h-3/4 container flex-grow-0 px-16 m-4"
+          class="w-full h-3/4 container flex-grow-0 px-16"
           onclick="clean()"
         >
           <img
-            class="object-contain flex-none justify-center m-auto h-full"
+            class="object-contain flex-none justify-center h-full"
             src="{{url_for('static', filename='img/syringe-cleaning2.png')}}"
             alt="clean"
           />
         </div>
 
         <div
-          class="w-full h-3/4 container flex-grow-0 px-16 m-4"
+          class="w-full h-3/4 container flex-grow-0 px-16"
           onclick="selfClean()"
         >
           <img
-            class="object-contain flex-none justify-center m-auto h-full"
+            class="object-contain flex-none justify-center h-full"
             src="{{url_for('static', filename='img/self-cleaning2.png')}}"
             alt="syringe"
           />
