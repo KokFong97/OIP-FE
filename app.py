@@ -21,7 +21,6 @@ dhtDevice = adafruit_dht.DHT11(board.D18, use_pulseio=False)
 #ser = serial.Serial('/dev/ttyACM0', 9600, timeout=1)
 #ser.flush()
 
-
 # Firebase
 # Fetch the service account key JSON file contents
 cred = credentials.Certificate(

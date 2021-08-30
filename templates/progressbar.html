@@ -603,8 +603,8 @@
     console.log("Time taken for drying is " + seconds.toString());
 
     var raw = JSON.stringify({
-      temperature: 0,
-      humidity: 1,
+      temperature: globalTemperature,
+      humidity: globalHumidity,
       timePassed: seconds,
     });
 
@@ -705,7 +705,7 @@
 
     setTimeout(function(){
       sterilizeDone()
-    }, 3000)
+    }, 5000)
   }
 
   function sterilizeDone() {
