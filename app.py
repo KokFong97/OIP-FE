@@ -3,13 +3,17 @@ import random
 import datetime
 import sys
 import time
-#import board
-#import adafruit_dht
-#import serial
+import board
+import adafruit_dht
+import serial
 import firebase_admin
 from firebase_admin import credentials
 from firebase_admin import db
 import cv2
+import os
+import pickle
+import numpy as np
+import sklearn.linear_model as LinearRegression
 
 # Initial the dht device, with data pin connected to:
 #dhtDevice = adafruit_dht.DHT11(board.D18, use_pulseio=False)
@@ -84,32 +88,44 @@ def timerML():
     print(temperature)
     print(humidity)
     print(timePassed)
-    return(jsonify(str(random.randint(0, 100))))
 
-# @app.route('/cleaning', methods = ['POST'])
-# def cleaning():
-#     ser.write(b"C")
-#     return("success")
+    cwd = os.getcwd()
+    model_dir = cwd + "/linear_regression.pkl"
 
-# @app.route('/drying', methods = ['POST'])
-# def draining():
-#     ser.write(b"D")
-#     return("success")
+    sample_input = np.asarray([[float(humidity), float(timePassed)]])
 
-# @app.route('/sterilizing', methods = ['POST'])
-# def drying():
-#     ser.write(b"E")
-#     return("success")
+    print("AAAAAAAAAAAAAA: {}".format(sample_input.shape))
 
-# @app.route('/whole', methods = ['POST'])
-# def whole():
-#     ser.write(b"G")
-#     return("success")
+    saved_model = pickle.load(open(model_dir, 'rb'))
+    results = saved_model.predict(sample_input)
+    print("model output: {} seconds to dry".format(results[0]))
 
-# @app.route('/stop', methods = ['POST'])
-# def stop():
-#     ser.write(b"S")
-#     return("success")
+    return(jsonify(str(round(results[0]))))
+    
+@app.route('/cleaning', methods = ['POST'])
+def cleaning():
+    ser.write(b"C")
+    return("success")
+
+@app.route('/drying', methods = ['POST'])
+def draining():
+    ser.write(b"D")
+    return("success")
+
+@app.route('/sterilizing', methods = ['POST'])
+def drying():
+    ser.write(b"E")
+    return("success")
+
+@app.route('/whole', methods = ['POST'])
+def whole():
+    ser.write(b"G")
+    return("success")
+
+@app.route('/stop', methods = ['POST'])
+def stop():
+    ser.write(b"S")
+    return("success")
 
 
 @app.route('/checkDB', methods=['POST'])
