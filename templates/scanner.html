@@ -66,10 +66,10 @@
 
       <!-- Text Header -->
 
-      <div class="flex flex-row w-screen mt-8 ml-20 space-x-40">
+      <div class="flex flex-row mt-8 mx-auto">
         <div class="flex items-center">
           <a class="text-gray-800 hover:text-gray-700 text-xl" href="#">
-            Scan QR
+            Scan DataMatrix code on Syringe
           </a>
         </div>
       </div>
@@ -79,10 +79,11 @@
         <video id="qr-video" class="flex-1 mr-20"></video>
         <div class="flex-1"></div>
       </div>
-      <div class="flex flex-row items-center">
+      <div class="flex flex-row items-center" id="buttons">
         <a
           href="#"
           onclick="back()"
+          
           class="
             w-1/6
             bg-blue-800
@@ -99,13 +100,14 @@
             px-2
             py-3
             mt-8
-          "
+          " style="z-index: 900"
         >
           Back
         </a>
         <a
           href="#"
           onclick="clean()"
+          
           class="
             w-1/6
             bg-blue-800
@@ -122,20 +124,195 @@
             px-2
             py-3
             mt-8
-          "
+          " style="z-index: 900"
         >
           next
         </a>
       </div>
     </div>
 
-    <div id="loadDiv"></div>
+    <div
+      class="fixed z-10 inset-0 overflow-y-auto"
+      aria-labelledby="modal-title"
+      role="dialog"
+      aria-modal="true"
+    >
+      <div
+        class="
+          flex
+          items-end
+          justify-center
+          min-h-screen
+          pt-4
+          px-4
+          pb-20
+          text-center
+          sm:block sm:p-0
+        "
+      >
+        <!--
+        Background overlay, show/hide based on modal state.
+  
+        Entering: "ease-out duration-300"
+          From: "opacity-0"
+          To: "opacity-100"
+        Leaving: "ease-in duration-200"
+          From: "opacity-100"
+          To: "opacity-0"
+      -->
+        <div
+          id="greybackground"
+          class="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity"
+          aria-hidden="true"
+          style="visibility: hidden"
+        ></div>
+
+        <!-- This element is to trick the browser into centering the modal contents. -->
+        <span
+          class="hidden sm:inline-block sm:align-middle sm:h-screen"
+          aria-hidden="true"
+          >&#8203;</span
+        >
+
+        <!--
+        Modal panel, show/hide based on modal state.
+  
+        Entering: "ease-out duration-300"
+          From: "opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
+          To: "opacity-100 translate-y-0 sm:scale-100"
+        Leaving: "ease-in duration-200"
+          From: "opacity-100 translate-y-0 sm:scale-100"
+          To: "opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
+      -->
+        <div
+          id="stopModal"
+          class="
+            inline-block
+            align-bottom
+            bg-white
+            rounded-lg
+            text-left
+            overflow-hidden
+            shadow-xl
+            transform
+            transition-all
+            sm:my-8 sm:align-middle sm:max-w-lg sm:w-full
+          "
+          style="visibility: hidden"
+        >
+          <div class="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
+            <div class="sm:flex sm:items-start">
+              <div
+                class="
+                  mx-auto
+                  flex-shrink-0 flex
+                  items-center
+                  justify-center
+                  h-12
+                  w-12
+                  rounded-full
+                  bg-red-100
+                  sm:mx-0 sm:h-10 sm:w-10
+                "
+              >
+                <!-- Heroicon name: outline/exclamation -->
+                <svg
+                  class="h-6 w-6 text-red-600"
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                  aria-hidden="true"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"
+                  />
+                </svg>
+              </div>
+              <div class="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left">
+                <h3
+                  id="header"
+                  class="text-lg leading-6 font-medium text-gray-900"
+                  id="modal-title"
+                >
+                  Terminate process
+                </h3>
+                <div class="mt-2">
+                  <p id="content" class="text-sm text-gray-500">
+                    Are you sure you want to terminate your entire process? You
+                    will need to restart the entire process. This action cannot
+                    be undone.
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="bg-gray-50 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
+            <button
+              id="confirmButton"
+              type="button"
+              onclick="cancel()"
+              class="
+                w-full
+                inline-flex
+                justify-center
+                rounded-md
+                border border-transparent
+                shadow-sm
+                px-4
+                py-2
+                bg-red-600
+                text-base
+                font-medium
+                text-white
+                hover:bg-red-700
+                focus:outline-none
+                focus:ring-2
+                focus:ring-offset-2
+                focus:ring-red-500
+                sm:ml-3 sm:w-auto sm:text-sm
+              "
+            >
+              Terminate
+            </button>
+
+          </div>
+        </div>
+      </div>
+      </div>
   </body>
 </html>
 <script
   type="text/javascript"
   src="https://unpkg.com/@zxing/library@0.18.3-dev.7656630/umd/index.js"
 ></script>
+<script>
+  function showModal() {
+    console.log("hello");
+    var greybackground = document.getElementById("greybackground");
+    var stopModal = document.getElementById("stopModal");
+    greybackground.style.visibility = "visible";
+
+    stopModal.style.visibility = "visible";
+    var buttons = document.getElementById("buttons");
+    buttons.style.visibility = "hidden";
+  }
+
+  function cancel() {
+    var greybackground = document.getElementById("greybackground");
+    var stopModal = document.getElementById("stopModal");
+
+    greybackground.style.visibility = "hidden";
+    stopModal.style.visibility = "hidden";
+    var buttons = document.getElementById("buttons");
+    buttons.style.visibility = "visible";
+    
+  }
+
+</script>
 <script type="text/javascript">
   var scanned_matrix = [];
   window.addEventListener("load", function () {
@@ -164,6 +341,16 @@
                   document.querySelector(".list-items").innerHTML =
                     `Syringe count:` + scanned_matrix.length;
                   console.log(scanned_matrix);
+                } else if (data == "Please dispose syringe as it has exceeded UV exposure time"){
+                  document.getElementById("header").innerHTML = "Dispose syringe!";
+                  document.getElementById("content").innerHTML = "Please dispose your syringe as it has been reused too many times or exposed to too much UV";
+                  document.getElementById("confirmButton").innerHTML = "Confirm";
+                  showModal()
+                } else if(data == "No Data in database"){
+                  document.getElementById("header").innerHTML = "Data not found";
+                  document.getElementById("content").innerHTML = "Syringe is not found in our database records. Please generate the code from our platform.";
+                  document.getElementById("confirmButton").innerHTML = "Confirm";
+                  showModal()
                 } else {
                   alert("Something went wrong. Please scan again.");
                 }
@@ -183,9 +370,16 @@
 </script>
 <script>
   function clean() {
-    var arrStr = encodeURIComponent(JSON.stringify(scanned_matrix));
-
-    window.location.href = "http://127.0.0.1:5000/progressbar?d=" + arrStr;
+    if(scanned_matrix.length == 0){
+      document.getElementById("header").innerHTML = "Scan Syringe";
+                  document.getElementById("content").innerHTML = "Please scan at least a single syringe to continue! Use self cleaning feature if you do not want any syringe in the product.";
+                  document.getElementById("confirmButton").innerHTML = "Confirm";
+      showModal()
+    }else{
+      var arrStr = encodeURIComponent(JSON.stringify(scanned_matrix));
+      window.location.href = "http://127.0.0.1:5000/progressbar?d=" + arrStr;
+    }
+    
     // var x = document.getElementById("loadDiv");
     // x.innerHTML = '<div wire:loading class="fixed top-12 left-0 right-0 bottom-0 w-full z-50 overflow-hidden bg-gray-700 opacity-75 flex flex-col items-center justify-center"><div class="loader ease-linear rounded-full border-4 border-t-4 border-gray-200 h-12 w-12 mb-4"></div><h2 class="text-center text-white text-xl font-semibold">Detecting Syringes...</h2><p class="w-1/2 text-center text-white">This may take a few seconds, please wait.</p></div>';
 
