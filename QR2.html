@@ -69,11 +69,11 @@
       }
     </style>
   </head>
-  <body style="height: 100vh;">
+  <body style="height: 100vh">
     <h1 id="title" class="title">iSyringe QR Generator</h1>
     <div
       class="columns is-mobile is-vcentered is-centered has-text-centered"
-      style="height: 100%;"
+      style="height: 100%"
     >
       <div class="column is-half">
         <div class="box">
@@ -91,21 +91,22 @@
     const firebaseConfig = {
       apiKey: "AIzaSyCu6xL1fLdkW0ve7uckKv5sdHcCEB1hapo",
       authDomain: "oip-project.firebaseapp.com",
-      databaseURL: "https://oip-project-default-rtdb.asia-southeast1.firebasedatabase.app",
+      databaseURL:
+        "https://oip-project-default-rtdb.asia-southeast1.firebasedatabase.app",
       projectId: "oip-project",
       storageBucket: "oip-project.appspot.com",
       messagingSenderId: "38208108109",
       appId: "1:38208108109:web:f6591736669d310fc30e04",
-      measurementId: "G-WJDM6XY3VE"
+      measurementId: "G-WJDM6XY3VE",
     };
-  
+
     // Initialize Firebase
     firebase.initializeApp(firebaseConfig);
     //const dbRef = firebase.database().ref();
     var database = firebase.database();
 
     const dbRef = firebase.database().ref();
-    console.log(dbRef)
+    console.log(dbRef);
 
     // // Get
     // dbRef.child("12345").get().then((snapshot) => {
@@ -132,18 +133,18 @@
       return (chr4() + "-" + chr4() + "-" + chr4()).toUpperCase();
     }
 
-    clear = function( o ) {
-      while( o.childNodes[ 0 ] ) {
-        o.removeChild( o.childNodes[ 0 ] );
+    clear = function (o) {
+      while (o.childNodes[0]) {
+        o.removeChild(o.childNodes[0]);
       }
-    }
+    };
 
     document.getElementById("generateBtn").addEventListener("click", () => {
       generateBtn.classList.add("is-loading");
       const uuid = randomHashGenerate();
       setTimeout(() => {
         generateBtn.classList.remove("is-loading");
-        clear(document.getElementById("box"))
+        clear(document.getElementById("box"));
         var svgNode = DATAMatrix(uuid);
         //document.getElementById("box").removeChild();
         document.getElementById("box").appendChild(svgNode);
@@ -158,12 +159,10 @@
       }, 200);
 
       firebase.database().ref(uuid).set({
-            reuseCount:0,
-            uvTime:0
+          reuseCount:0,
+          uvTime:0
         });
 
     });
   </script>
-
-
 </html>

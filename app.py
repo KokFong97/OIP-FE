@@ -1,4 +1,4 @@
-from flask import Flask, jsonify, request, render_template,redirect,url_for
+from flask import Flask, jsonify, request, render_template, redirect, url_for
 import random
 import datetime
 import sys
@@ -15,11 +15,12 @@ import cv2
 #dhtDevice = adafruit_dht.DHT11(board.D18, use_pulseio=False)
 
 #ser = serial.Serial('/dev/ttyACM0', 9600, timeout=1)
-#ser.flush()
+# ser.flush()
 
 # Firebase
 # Fetch the service account key JSON file contents
-cred = credentials.Certificate('oip-project-firebase-adminsdk-9f843-845892ff2d.json')
+cred = credentials.Certificate(
+    'oip-project-firebase-adminsdk-9f843-845892ff2d.json')
 
 # Initialize the app with a service account, granting admin privileges
 firebase_admin.initialize_app(cred, {
@@ -27,35 +28,40 @@ firebase_admin.initialize_app(cred, {
 })
 
 
-
-
 app = Flask(__name__)
+
 
 @app.route("/")
 def hello_world():
     return render_template("index2.html")
 
+
 @app.route("/menu")
 def menu():
     return render_template("menu.html")
+
 
 @app.route("/clean")
 def clean():
     return render_template("clean.html")
 
+
 @app.route("/progressbar")
 def pBar():
     return render_template("progressbar.html")
+
 
 @app.route("/scanner")
 def scanner():
     return render_template("scanner.html")
 
-@app.route("/syringeDetection", methods = ['POST'])
+
+@app.route("/syringeDetection", methods=['POST'])
 def syringeDetection():
     return("test")
 
-@app.route("/updateTempHum", methods = ['GET'])
+
+@app.route("/updateTempHum", methods=['GET'])
 def updateHum():
     success = False
     while not success:
@@ -68,7 +74,8 @@ def updateHum():
         except RuntimeError as error:
             continue
 
-@app.route('/timerML', methods = ['POST'])
+
+@app.route('/timerML', methods=['POST'])
 def timerML():
     data = request.json
     temperature = data['temperature']
@@ -77,7 +84,7 @@ def timerML():
     print(temperature)
     print(humidity)
     print(timePassed)
-    return(jsonify(str(random.randint(0,100))))
+    return(jsonify(str(random.randint(0, 100))))
 
 # @app.route('/cleaning', methods = ['POST'])
 # def cleaning():
@@ -104,6 +111,7 @@ def timerML():
 #     ser.write(b"S")
 #     return("success")
 
+
 @app.route('/checkDB', methods=['POST'])
 def checkDB():
     # As an admin, the app has access to read and write all data, regradless of Security Rules
@@ -113,13 +121,14 @@ def checkDB():
     if (ref.get() is None):
         return "No Data in database"
     else:
-        if(ref.get()["reuseCount"]<11):
-            if(ref.get()["uvTime"]<10000):
+        if(ref.get()["reuseCount"] < 11):
+            if(ref.get()["uvTime"] < 10000):
                 return("Syringe can use")
             else:
                 return("Please dispose syringe as it has exceeded UV exposure time")
         else:
             return("Please dispose syringe as it has exceeded reuseCount")
+
 
 @app.route('/readQR', methods=['POST'])
 def readQR():
@@ -129,12 +138,12 @@ def readQR():
     result = True
     while(result):
         #_, img = cap.read()
-        #cv2.imwrite("syringeImg/NewPicture.jpg",img)
+        # cv2.imwrite("syringeImg/NewPicture.jpg",img)
         result = False
     # get bounding box coords and data
     img = cv2.imread("syringeImg/NewPicture.jpg")
     data, bbox, _ = detector.detectAndDecode(img)
-    
+
     qrCode = "none"
 
     # if there is a bounding box, draw one, along with the data
@@ -151,8 +160,8 @@ def readQR():
             if (ref.get() is None):
                 return "No Data in database"
             else:
-                if(ref.get()["reuseCount"]<11):
-                    if(ref.get()["uvTime"]<10000):
+                if(ref.get()["reuseCount"] < 11):
+                    if(ref.get()["uvTime"] < 10000):
                         return("Syringe can use")
                     else:
                         return("Please dispose syringe as it has exceeded UV exposure time")
@@ -162,10 +171,11 @@ def readQR():
     #cv2.imshow("code detector", img)
 
     # free camera object and exit
-    #cap.release()
-    #cv2.destroyAllWindows()
+    # cap.release()
+    # cv2.destroyAllWindows()
 
     return("No QR code")
+
 
 if __name__ == "__main__":
     app.run(debug=True)
