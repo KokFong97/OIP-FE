@@ -88,8 +88,19 @@ def timerML():
     print(temperature)
     print(humidity)
     print(timePassed)
-    return(jsonify(str(random.randint(0, 100))))
+    cwd = os.getcwd()
+    model_dir = cwd + "/linear_regression.pkl"
 
+    sample_input = np.asarray([[float(humidity), float(timePassed)]])
+
+    print("AAAAAAAAAAAAAA: {}".format(sample_input.shape))
+
+    saved_model = pickle.load(open(model_dir, 'rb'))
+    results = saved_model.predict(sample_input)
+    print("model output: {} seconds to dry".format(results[0]))
+
+    return(jsonify(str(round(results[0]))))
+    
 @app.route('/cleaning', methods = ['POST'])
 def cleaning():
     ser.write(b"C")
@@ -183,3 +194,4 @@ def readQR():
 
 if __name__ == "__main__":
     app.run(debug=True)
+
