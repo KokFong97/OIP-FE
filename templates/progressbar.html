@@ -194,7 +194,7 @@
 
       <hr />
 
-      <div class="w-full container mx-auto flex-grow-0 h-1/2">
+      <div class="w-full container mx-auto flex-grow-0 h-2/5 mt-6 mb-6">
         <img
           id="processImage"
           class="object-contain flex-none justify-center m-auto h-full"
@@ -217,14 +217,14 @@
           <p id="timeElapsed" class="text-lg text-gray-600">
             Time elapsed : 0:21:19
           </p>
-          <p id="timeEstimated" class="text-lg text-gray-600">
+          <p id="timeEstimated" class="text-lg text-gray-600 flex-grow">
             Estimated ~ 41 mins
           </p>
         </div>
 
         <div
           id="stopButton"
-          class="w-3/4 h-10 relative h-16"
+          class="w-3/5 h-10 relative h-16"
           style="z-index: 900"
         >
           <img
@@ -558,24 +558,30 @@
 
     elapsedTimer = setTimeout(timeElapsed, 1000);
 
-    if (secondsToTime(seconds).m == "0" && secondsToTime(seconds).s == "30") {
+    if (secondsToTime(seconds).m == "0" && secondsToTime(seconds).s == "5") {
       cleanDone();
-    } else if (
-      secondsToTime(seconds).m == "1" &&
-      secondsToTime(seconds).s == "0"
-    ) {
-      dryDone();
-    } else if (
-      secondsToTime(seconds).m == "1" &&
-      secondsToTime(seconds).s == "30"
-    ) {
-      sterilizeDone();
-    }
+    } 
+    // else if (
+    //   secondsToTime(seconds).m == "1" &&
+    //   secondsToTime(seconds).s == "0"
+    // ) {
+    //   dryDone();
+    // } else if (
+    //   secondsToTime(seconds).m == "1" &&
+    //   secondsToTime(seconds).s == "30"
+    // ) {
+    //   sterilizeDone();
+    // }
   }
 
   let globalHumidity = 0;
   let globalTemperature = 0;
   let dryStartTime = 0;
+
+  let cleaningTime = 300;
+  let dryingTime = 0;
+  let sterilizeTime = 300;
+  let totaltime = 0;
 
   var estimatedTimer;
   function timeEstimated() {
@@ -597,8 +603,8 @@
     console.log("Time taken for drying is " + seconds.toString());
 
     var raw = JSON.stringify({
-      temperature: globalTemperature,
-      humidity: globalHumidity,
+      temperature: 0,
+      humidity: 1,
       timePassed: seconds,
     });
 
@@ -609,17 +615,31 @@
       redirect: "follow",
     };
 
+    let resultBool = false;
+
     fetch("http://127.0.0.1:5000/timerML", requestOptions)
       .then((response) => response.text())
-      .then(
-        (result) =>
-          (document.getElementById("timeEstimated").innerHTML =
-            "Estimated left ~ " + result)
+      .then(function
+        (result) {
+          dryingTime = parseInt(result);
+          totaltime = cleaningTime + dryingTime + sterilizeTime;
+          document.getElementById("timeEstimated").innerHTML =
+            "Estimated time left ~ " + secondsToTime(totaltime).m + " minutes";
+          console.log("Estimated Drying time is "+dryingTime)
+          if(parseInt(result)<1){
+            console.log("DRYING IS DONE")
+            clearTimeout(estimatedTimer);
+            dryDone()
+          }
+          
+        }
       )
       .catch((error) => console.log("error", error));
+    console.log(dryingTime)
     estimatedTimer = setTimeout(timeEstimated, 1000);
   }
   function cleanDone() {
+    cleaningTime = 0;
     var cleaning = document.getElementById("cleaning");
     cleaning.classList.remove("active");
     cleaning.classList.add("done");
@@ -630,10 +650,30 @@
     document.getElementById("processImage").src =
       "{{url_for('static', filename='img/drying2.png')}}";
     dryStartTime = new Date();
+
+    var raw = "";
+
+    var requestOptions = {
+      method: "POST",
+      body: raw,
+      redirect: "follow",
+    };
+
+    fetch("http://127.0.0.1:5000/stop", requestOptions)
+      .then((response) => response.text())
+      .then((result) => console.log(result))
+      .catch((error) => console.log("error", error));
+
+    fetch("http://127.0.0.1:5000/drying", requestOptions)
+      .then((response) => response.text())
+      .then((result) => console.log(result))
+      .catch((error) => console.log("error", error));
   }
 
   var uvStartTime;
   function dryDone() {
+    dryStartTime = 0;
+    dryingTime = 0;
     var drying = document.getElementById("drying");
     drying.classList.remove("active");
     drying.classList.add("done");
@@ -643,10 +683,46 @@
 
     document.getElementById("processImage").src =
       "{{url_for('static', filename='img/sterilizing2.png')}}";
+
+    var raw = "";
+
+    var requestOptions = {
+      method: "POST",
+      body: raw,
+      redirect: "follow",
+    };
+
+    fetch("http://127.0.0.1:5000/stop", requestOptions)
+      .then((response) => response.text())
+      .then((result) => console.log(result))
+      .catch((error) => console.log("error", error));
+
+    fetch("http://127.0.0.1:5000/sterilizing", requestOptions)
+      .then((response) => response.text())
+      .then((result) => console.log(result))
+      .catch((error) => console.log("error", error));
     uvStartTime = new Date();
+
+    setTimeout(function(){
+      sterilizeDone()
+    }, 3000)
   }
 
   function sterilizeDone() {
+    var raw = "";
+
+    var requestOptions = {
+      method: "POST",
+      body: raw,
+      redirect: "follow",
+    };
+
+    fetch("http://127.0.0.1:5000/stop", requestOptions)
+      .then((response) => response.text())
+      .then((result) => console.log(result))
+      .catch((error) => console.log("error", error));
+
+    sterilizeTime = 0;
     uvEndTime = new Date();
     var timeDiff = uvEndTime - uvStartTime; //in ms
     // strip the ms
@@ -683,18 +759,26 @@
       "{{url_for('static', filename='img/syringe.png')}}";
     document.getElementById("loadingBar").style.visibility = "hidden";
 
+    var totalTimeDiff = uvEndTime - startTime; //in ms
+    // strip the ms
+    totalTimeDiff /= 1000;
+
+    // get seconds
+    totalSeconds = Math.round(totalTimeDiff);
+
     document.getElementById("header").innerHTML = "Process done!";
     document.getElementById("content").innerHTML =
       "The entire process is done. Total time taken is " +
-      secondsToTime(seconds).m +
+      secondsToTime(totalSeconds).m +
       " mins " +
-      secondsToTime(seconds).s +
+      secondsToTime(totalSeconds).s +
       " seconds. Please remove your syringes. Press confirm to go back to main page.";
     document.getElementById("confirmButton").innerHTML = "Confirm";
 
     showModal();
+    document.getElementById("timeEstimated").innerHTML =
+            "Estimated time left ~ 0 minutes";
 
-    clearTimeout(estimatedTimer);
     clearTimeout(elapsedTimer);
   }
 
@@ -733,7 +817,7 @@
     redirect: "follow",
   };
 
-  fetch("http://127.0.0.1:5000/whole", requestOptions)
+  fetch("http://127.0.0.1:5000/cleaning", requestOptions)
     .then((response) => response.text())
     .then((result) => console.log(result))
     .catch((error) => console.log("error", error));

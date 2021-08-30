@@ -18,8 +18,8 @@ import sklearn.linear_model as LinearRegression
 # Initial the dht device, with data pin connected to:
 #dhtDevice = adafruit_dht.DHT11(board.D18, use_pulseio=False)
 
-#ser = serial.Serial('/dev/ttyACM0', 9600, timeout=1)
-# ser.flush()
+ser = serial.Serial('/dev/ttyACM0', 9600, timeout=1)
+ser.flush()
 
 # Firebase
 # Fetch the service account key JSON file contents
@@ -70,11 +70,11 @@ def updateHum():
     success = False
     while not success:
         try:
-            #temperature_c = dhtDevice.temperature
-            #humidity = dhtDevice.humidity
+            temperature_c = dhtDevice.temperature
+            humidity = dhtDevice.humidity
             success = True
-            #print ('humidity:', humidity, 'temperature', temperature_c)
-            return jsonify(humid=str(1), temp=str(1))
+            print ('humidity:', humidity, 'temperature', temperature_c)
+            return jsonify(humid=str(humidity), temp=str(temperature_c))
         except RuntimeError as error:
             continue
 
@@ -93,14 +93,11 @@ def timerML():
     model_dir = cwd + "/linear_regression.pkl"
 
     sample_input = np.asarray([[float(humidity), float(timePassed)]])
-
-    print("AAAAAAAAAAAAAA: {}".format(sample_input.shape))
-
     saved_model = pickle.load(open(model_dir, 'rb'))
     results = saved_model.predict(sample_input)
     print("model output: {} seconds to dry".format(results[0]))
 
-    return(jsonify(str(round(results[0]))))
+    return(str(round(results[0])))
     
 @app.route('/cleaning', methods = ['POST'])
 def cleaning():
