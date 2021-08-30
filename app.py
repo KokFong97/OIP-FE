@@ -3,19 +3,23 @@ import random
 import datetime
 import sys
 import time
-#import board
-#import adafruit_dht
-#import serial
+import board
+import adafruit_dht
+import serial
 import firebase_admin
 from firebase_admin import credentials
 from firebase_admin import db
 import cv2
+import pickle
+import os
+import numpy as np
+from sklearn.linear_model import LinearRegression
 
 # Initial the dht device, with data pin connected to:
-#dhtDevice = adafruit_dht.DHT11(board.D18, use_pulseio=False)
+dhtDevice = adafruit_dht.DHT11(board.D18, use_pulseio=False)
 
 #ser = serial.Serial('/dev/ttyACM0', 9600, timeout=1)
-# ser.flush()
+#ser.flush()
 
 # Firebase
 # Fetch the service account key JSON file contents
@@ -66,11 +70,11 @@ def updateHum():
     success = False
     while not success:
         try:
-            #temperature_c = dhtDevice.temperature
-            #humidity = dhtDevice.humidity
+            temperature_c = dhtDevice.temperature
+            humidity = dhtDevice.humidity
             success = True
-            #print ('humidity:', humidity, 'temperature', temperature_c)
-            return jsonify(humid=str(1), temp=str(1))
+            print ('humidity:', humidity, 'temperature', temperature_c)
+            return jsonify(humid=str(humidity), temp=str(temperature_c))
         except RuntimeError as error:
             continue
 
@@ -86,30 +90,30 @@ def timerML():
     print(timePassed)
     return(jsonify(str(random.randint(0, 100))))
 
-# @app.route('/cleaning', methods = ['POST'])
-# def cleaning():
-#     ser.write(b"C")
-#     return("success")
+@app.route('/cleaning', methods = ['POST'])
+def cleaning():
+    ser.write(b"C")
+    return("success")
 
-# @app.route('/drying', methods = ['POST'])
-# def draining():
-#     ser.write(b"D")
-#     return("success")
+@app.route('/drying', methods = ['POST'])
+def draining():
+    ser.write(b"D")
+    return("success")
 
-# @app.route('/sterilizing', methods = ['POST'])
-# def drying():
-#     ser.write(b"E")
-#     return("success")
+@app.route('/sterilizing', methods = ['POST'])
+def drying():
+    ser.write(b"E")
+    return("success")
 
-# @app.route('/whole', methods = ['POST'])
-# def whole():
-#     ser.write(b"G")
-#     return("success")
+@app.route('/whole', methods = ['POST'])
+def whole():
+    ser.write(b"G")
+    return("success")
 
-# @app.route('/stop', methods = ['POST'])
-# def stop():
-#     ser.write(b"S")
-#     return("success")
+@app.route('/stop', methods = ['POST'])
+def stop():
+    ser.write(b"S")
+    return("success")
 
 
 @app.route('/checkDB', methods=['POST'])
