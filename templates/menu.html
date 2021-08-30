@@ -1,80 +1,93 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>iSyringe</title>
-    <meta name="author" content="David Grzyb">
-    <meta name="description" content="">
+    <meta name="author" content="David Grzyb" />
+    <meta name="description" content="" />
 
     <!-- Tailwind -->
-    <link href="https://unpkg.com/tailwindcss/dist/tailwind.min.css" rel="stylesheet">
+    <link
+      href="https://unpkg.com/tailwindcss/dist/tailwind.min.css"
+      rel="stylesheet"
+    />
     <style>
-        @import url('https://fonts.googleapis.com/css?family=Karla:400,700&display=swap');
+      @import url("https://fonts.googleapis.com/css?family=Karla:400,700&display=swap");
 
-        .font-family-karla {
-            font-family: karla;
-        }
+      .font-family-karla {
+        font-family: karla;
+      }
 
-        html, body {margin: 0; height: 100%; overflow: hidden}
-        
+      html,
+      body {
+        margin: 0;
+        height: 100%;
+        overflow: hidden;
+      }
     </style>
-    
+
     <!-- Font Awesome -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.13.0/js/all.min.js" integrity="sha256-KzZiKy0DWYsnwMF+X1DvQngQ2/FxF7MF3Ff72XcpuPs=" crossorigin="anonymous"></script>
-</head>
-<body class="bg-white font-family-karla">
-
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.13.0/js/all.min.js"
+      integrity="sha256-KzZiKy0DWYsnwMF+X1DvQngQ2/FxF7MF3Ff72XcpuPs="
+      crossorigin="anonymous"
+    ></script>
+  </head>
+  <body class="bg-white font-family-karla">
     <div class="flex flex-col h-screen">
+      <!-- Top Bar-->
+      <top-bar></top-bar>
+      <script src="{{url_for('static', filename='js/topbar.js')}}"></script>
 
-        <!-- Top Bar-->
-        <top-bar></top-bar>
-        <script src="{{url_for('static', filename='js/topbar.js')}}"></script>
-
-        <div class="flex flex-row w-screen mt-24">
-            
-            <div class="w-full h-3/4 container flex-grow-0 px-16 m-4" onclick=clean()>
-                <img class="object-contain flex-none justify-center m-auto h-full" src="{{url_for('static', filename='img/syringe-cleaning.png')}}" alt="clean">
-            </div>
-
-            <div class="w-full h-3/4 container flex-grow-0 px-16 m-4" onclick=selfClean()>
-                <img class="object-contain flex-none justify-center m-auto h-full" src="{{url_for('static', filename='img/self-cleaning.png')}}" alt="syringe">
-            </div>
-
+      <div class="flex flex-row w-screen mt-24">
+        <div
+          class="w-full h-3/4 container flex-grow-0 px-16 m-4"
+          onclick="clean()"
+        >
+          <img
+            class="object-contain flex-none justify-center m-auto h-full"
+            src="{{url_for('static', filename='img/syringe-cleaning2.png')}}"
+            alt="clean"
+          />
         </div>
-        
 
+        <div
+          class="w-full h-3/4 container flex-grow-0 px-16 m-4"
+          onclick="selfClean()"
+        >
+          <img
+            class="object-contain flex-none justify-center m-auto h-full"
+            src="{{url_for('static', filename='img/self-cleaning2.png')}}"
+            alt="syringe"
+          />
+        </div>
+      </div>
     </div>
-
-    
-
-</body>
-
+  </body>
 </html>
 
 <script>
-    function clean() {
-        window.location.href = "http://127.0.0.1:5000/clean"; 
-    }
+  function clean() {
+    window.location.href = "http://127.0.0.1:5000/clean";
+  }
 
-    function selfClean() {
-        window.location.href = "http://127.0.0.1:5000/progressbar"
-    }   
+  function selfClean() {
+    window.location.href = "http://127.0.0.1:5000/progressbar";
+  }
 
-    function updateClock() {
-        var now = new Date(), // current date
-        time = now.getHours() + ':' + now.getMinutes() + ':' + now.getSeconds();
+  function updateClock() {
+    var now = new Date(), // current date
+      time = now.getHours() + ":" + now.getMinutes() + ":" + now.getSeconds();
 
-        // a cleaner way than string concatenation
-        date = [now.getDate(), 
-                now.getMonth(),
-                now.getFullYear()].join('/');
+    // a cleaner way than string concatenation
+    date = [now.getDate(), now.getMonth(), now.getFullYear()].join("/");
 
-        // set the content of the element with the ID time to the formatted string
-        document.getElementById('date').innerHTML = date;
-        document.getElementById('time').innerHTML = time;
-        // call this function again in 1000ms
-        setTimeout(updateClock, 1000);
-    }
-updateClock(); 
+    // set the content of the element with the ID time to the formatted string
+    document.getElementById("date").innerHTML = date;
+    document.getElementById("time").innerHTML = time;
+    // call this function again in 1000ms
+    setTimeout(updateClock, 1000);
+  }
+  updateClock();
 </script>

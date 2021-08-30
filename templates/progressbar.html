@@ -198,7 +198,7 @@
         <img
           id="processImage"
           class="object-contain flex-none justify-center m-auto h-full"
-          src="{{url_for('static', filename='img/washing.png')}}"
+          src="{{url_for('static', filename='img/washing2.png')}}"
           alt="syringe"
         />
       </div>
@@ -573,18 +573,18 @@
     }
   }
 
-  let globalHumidity = 0
-  let globalTemperature = 0
-  let dryStartTime = 0
+  let globalHumidity = 0;
+  let globalTemperature = 0;
+  let dryStartTime = 0;
 
   var estimatedTimer;
   function timeEstimated() {
     var myHeaders = new Headers();
     myHeaders.append("Content-Type", "application/json");
 
-    if(dryStartTime == 0){
-      seconds = 0
-    }else{
+    if (dryStartTime == 0) {
+      seconds = 0;
+    } else {
       dryEndTime = new Date();
       var timeDiff = dryEndTime - dryStartTime; //in ms
       // strip the ms
@@ -593,7 +593,6 @@
       // get seconds
       seconds = Math.round(timeDiff);
     }
-    
 
     console.log("Time taken for drying is " + seconds.toString());
 
@@ -629,14 +628,12 @@
     drying.classList.add("active");
 
     document.getElementById("processImage").src =
-      "{{url_for('static', filename='img/drying.png')}}";
+      "{{url_for('static', filename='img/drying2.png')}}";
     dryStartTime = new Date();
   }
 
-  
   var uvStartTime;
   function dryDone() {
-   
     var drying = document.getElementById("drying");
     drying.classList.remove("active");
     drying.classList.add("done");
@@ -645,7 +642,7 @@
     sterilize.classList.add("active");
 
     document.getElementById("processImage").src =
-      "{{url_for('static', filename='img/sterilizing.png')}}";
+      "{{url_for('static', filename='img/sterilizing2.png')}}";
     uvStartTime = new Date();
   }
 
@@ -701,8 +698,6 @@
     clearTimeout(elapsedTimer);
   }
 
-
-
   function updateTempHumid() {
     var raw = "";
 
@@ -714,8 +709,8 @@
     fetch("http://127.0.0.1:5000/updateTempHum", requestOptions)
       .then((response) => response.json())
       .then(function (json) {
-        globalHumidity = json.humid
-        globalTemperature = json.temp
+        globalHumidity = json.humid;
+        globalTemperature = json.temp;
         document.getElementById("temp").innerHTML =
           "Temperature - " + json.temp + "°C";
         document.getElementById("humid").innerHTML =
